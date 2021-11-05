@@ -1,7 +1,7 @@
 from django.http.response import JsonResponse
 from django.shortcuts import render
 from rest_framework import serializers
-from . models import Inventory
+from . models import IngredientQuantity, Inventory
 from . serializers import InventorySerializer
 from rest_framework.renderers import JSONRenderer
 from django.http import HttpResponse
@@ -18,6 +18,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 #     return HttpResponse(content_type='application/json')
 
+
 @csrf_exempt
 def inventory_list(request):
     if request.method == "GET":
@@ -32,7 +33,8 @@ def inventory_list(request):
             serializer.save()
             return JsonResponse(serializer.data, status=201)
         return JsonResponse(serializer.errors, status=400)
-
+        
+@csrf_exempt
 def inventory_detail(request, pk):
     try:
         inventory = Inventory.objects.get(pk=pk)
