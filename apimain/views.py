@@ -8,49 +8,62 @@ from django.http import HttpResponse
 from rest_framework.parsers import JSONParser
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.decorators import api_view
-from rest_framework import status
+from rest_framework import status, mixins, generics
 from rest_framework.response import Response
 from django.http import Http404
 from rest_framework.views import APIView
 
 
-class InventoryList(APIView):
-    def get(self, request, format=None):
-        inventory = Inventory.objects.all()
-        serializer = InventorySerializer(inventory, many=True)
-        return Response(serializer.data)
+class InventoryList(mixins.ListModelMixin,
+                    mixins.CreateModelMixin,
+                    generics.GenericAPIView):
+    queryset = Inventory.objects.all()
+    serializer_class = InventorySerializer
 
-    def post(self, request, format=None):
-        serializer = InventorySerializer(data = request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)        
+    def get(self, request, *args, **kwargs):
+        # inventory = Inventory.objects.all()
+        # serializer = InventorySerializer(inventory, many=True)
+        # return Response(serializer.data)
+        return self.list(request, *args, **kwargs)
 
-class InventoryDetail(APIView): 
-    def get_object(self, pk):
-        try:
-            return Inventory.objects.get(pk=pk)
-        except Inventory.DoesNotExist:
-            raise Http404
+    def post(self, request, *args, **kwargs):
+        # serializer = InventorySerializer(data = request.data)
+        # if serializer.is_valid():
+        #     serializer.save()
+        #     return Response(serializer.data, status=status.HTTP_201_CREATED)
+        # return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return self.create(request, *args, **kwargs)        
 
-    def get(self, request, pk, format=None):
-        inventory = self.get_object(pk)
-        serializer = InventorySerializer(inventory)
-        return Response(serializer.data)
+class InventoryDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Inventory.objects.all()
+    serializer_class = InventorySerializer
 
-    def put(self, request, pk, format=None):
-        inventory = self.get_object(pk)
-        serializer = InventorySerializer(inventory, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+# class InventoryDetail(APIView): 
+#     def get_object(self, pk):
+#         try:
+#             return Inventory.objects.get(pk=pk)
+#         except Inventory.DoesNotExist:
+#             raise Http404
 
-    def delete(self, request, pk, format=None):
-        inventory = self.get_object(pk)
-        inventory.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+#     def get(self, request, pk, format=None):
+#         inventory = self.get_object(pk)
+#         serializer = InventorySerializer(inventory)
+#         return Response(serializer.data)
+
+#     def put(self, request, pk, format=None):
+#         inventory = self.get_object(pk)
+#         serializer = InventorySerializer(inventory, data=request.data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+#     def delete(self, request, pk, format=None):
+#         inventory = self.get_object(pk)
+#         inventory.delete()
+#         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
 
 
 # #@csrf_exempt
