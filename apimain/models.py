@@ -1,6 +1,18 @@
 from django.db import models
 
 # Create your models here.
+class Admin(models.Model):
+    username = models.CharField(max_length=100)
+    password = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.username
+
+class customer(models.Model):
+    username = models.CharField(max_length=100)
+    password = models.CharField(max_length=100)
+    
+
 class Inventory(models.Model):
     ingredient = models.CharField(max_length=50)
 
