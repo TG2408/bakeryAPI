@@ -8,10 +8,12 @@ class Admin(models.Model):
     def __str__(self):
         return self.username
 
-class customer(models.Model):
+class Customer(models.Model):
     username = models.CharField(max_length=100)
     password = models.CharField(max_length=100)
     
+    def __str__(self):
+        return self.username
 
 class Inventory(models.Model):
     ingredient = models.CharField(max_length=50)

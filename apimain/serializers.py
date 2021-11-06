@@ -1,11 +1,34 @@
 from rest_framework import fields, serializers
 from rest_framework.compat import md_filter_add_syntax_highlight
-from . models import Admin, customer, Inventory, IngredientQuantity, Products
+from . models import Admin, Customer, Inventory, IngredientQuantity, Products
+
+class AdminSerialzer(serializers.ModelSerializer):
+    class Meta:
+        model = Admin
+        fields = ['username', 'password']
+
+class CustomerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Customer
+        fields = ['username', 'password']
 
 class InventorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Inventory
         fields = ['ingredient']
+
+class IngredientQuantitySerialzer(serializers.ModelSerializer):
+    class Meta:
+        model = IngredientQuantity
+        fields = ['inventory', 'product', 'quantity']
+
+class ProductsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Products
+        fields = ['product', 'cost_price', 'selling_price', 'all_ingridient']
+
+ 
+
 
     # def create(self, validated_data):
     #     """
@@ -24,3 +47,4 @@ class InventorySerializer(serializers.ModelSerializer):
     #     instance.style = validated_data.get('style', instance.style)
     #     instance.save()
     #     return instance
+
