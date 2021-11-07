@@ -39,11 +39,13 @@ class ProductsSerializer(serializers.ModelSerializer):
         model = Products
         fields = ['product', 'cost_price', 'selling_price', 'all_ingridient']
 
+# All Products Serializer
 class AvialableProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Products
         fields = ['product']
 
+#Oders Serializer
 class OrdersSerializer(serializers.ModelSerializer):
     class Meta:
         model = Orders

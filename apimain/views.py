@@ -92,15 +92,17 @@ def available_products(request, format=None):
         serializer = AvialableProductSerializer(products, many=True)
         return Response(serializer.data)
 
+# Order History
 @api_view(['GET','POST'])
 def orders(request, name, format=None):
-    # authentication_classes = [TokenAuthentication]
-    # permission_classes = [IsAuthenticated]  
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]  
     if request.method == "GET":
         orders = Orders.objects.filter(user = name)
         serializer = OrdersSerializer(orders, many=True)
         return Response(serializer.data)
 
+# New Order
 @csrf_exempt
 def new_order(request):
     if request.method == 'POST':
