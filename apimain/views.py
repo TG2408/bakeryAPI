@@ -1,22 +1,59 @@
+from django.http import Http404, HttpResponse
 from django.http.response import JsonResponse
 from django.shortcuts import render
-from rest_framework import serializers
-from . models import IngredientQuantity, Inventory
-from . serializers import InventorySerializer
-from rest_framework.renderers import JSONRenderer
-from django.http import HttpResponse
-from rest_framework.parsers import JSONParser
 from django.views.decorators.csrf import csrf_exempt
-from rest_framework.decorators import api_view
-from rest_framework import status, mixins, generics
-from rest_framework.response import Response
-from django.http import Http404
-from rest_framework.views import APIView
+from django.contrib.auth import login
 
+from . models import IngredientQuantity, Inventory
+from . serializers import InventorySerializer, UserSerializer, RegisterSerializer
+
+from rest_framework.renderers import JSONRenderer
+from rest_framework.decorators import api_view
+from rest_framework import status, mixins, generics, generics, permissions, serializers
+from rest_framework.response import Response
+from rest_framework.parsers import JSONParser
+from rest_framework.authtoken.serializers import AuthTokenSerializer
+from rest_framework.permissions import IsAdminUser, IsAuthenticated
+from rest_framework.views import APIView
+from rest_framework.authentication import BasicAuthentication
+
+from knox.views import LoginView as KnoxLoginView
+from knox.auth import TokenAuthentication
+from knox.models import AuthToken
+
+
+# Register API
+class RegisterAPI(generics.GenericAPIView):
+    serializer_class = RegisterSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save()
+        return Response({
+        "user": UserSerializer(user, context=self.get_serializer_context()).data,
+        "token": AuthToken.objects.create(user)[1]
+        })
+
+class LoginAPI(KnoxLoginView):
+    authentication_classes = [BasicAuthentication]
+
+
+    def post(self, request, format=None):
+        serializer = AuthTokenSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data['user']
+        login(request, user)
+        return super(LoginAPI, self).post(request, format=None)
 
 class InventoryList(mixins.ListModelMixin,
                     mixins.CreateModelMixin,
-                    generics.GenericAPIView):
+                    generics.GenericAPIView,
+                    APIView):
+        
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAdminUser,)
+
     queryset = Inventory.objects.all()
     serializer_class = InventorySerializer
 
