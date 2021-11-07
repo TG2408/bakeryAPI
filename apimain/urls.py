@@ -17,4 +17,5 @@ urlpatterns = [
     path('ingredientQuantity/<int:pk>/', IngredientQuantityDetail.as_view()),
     path('available_products/',views.available_products),
     path('orders/<str:name>/', views.orders),
+    path('new_order/', views.new_order)
 ]
