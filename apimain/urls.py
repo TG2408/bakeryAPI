@@ -15,5 +15,6 @@ urlpatterns = [
     path('products/<int:pk>/', ProductDetail.as_view()),
     path('ingredientQuantity/', IngredientQuantityList.as_view()),
     path('ingredientQuantity/<int:pk>/', IngredientQuantityDetail.as_view()),
-    path('available_products/',views.available_products)
+    path('available_products/',views.available_products),
+    path('orders/<str:name>/', views.orders),
 ]
