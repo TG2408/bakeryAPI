@@ -1,6 +1,6 @@
 from rest_framework import fields, serializers
 from rest_framework.compat import md_filter_add_syntax_highlight
-from . models import Customer, Inventory, IngredientQuantity, Products
+from . models import Inventory, IngredientQuantity, Products
 from django.contrib.auth.models import User
 
 # User Serializer
@@ -18,24 +18,21 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         user = User.objects.create_user(validated_data['username'], validated_data['email'], validated_data['password'])
-
         return user
 
-class CustomerSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Customer
-        fields = ['username', 'password']
-
+#Inventory Serializer
 class InventorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Inventory
         fields = ['ingredient']
 
+#Ingredient Quantity Serialzer
 class IngredientQuantitySerialzer(serializers.ModelSerializer):
     class Meta:
         model = IngredientQuantity
         fields = ['inventory', 'product', 'quantity']
 
+#Products Serializer
 class ProductsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Products
