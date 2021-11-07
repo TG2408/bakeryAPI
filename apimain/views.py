@@ -1,7 +1,7 @@
 from django.contrib.auth import login
 
 from . models import IngredientQuantity, Inventory, Products
-from . serializers import InventorySerializer, UserSerializer, RegisterSerializer, IngredientQuantitySerialzer, ProductsSerializer
+from . serializers import InventorySerializer, UserSerializer, RegisterSerializer, IngredientQuantitySerialzer, ProductsSerializer, AvialableProductSerializer
 
 from rest_framework.renderers import JSONRenderer
 from rest_framework.decorators import api_view, permission_classes
@@ -81,6 +81,32 @@ class IngredientQuantityDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAdminUser]  
     queryset = IngredientQuantity.objects.all()
     serializer_class = IngredientQuantitySerialzer
+
+
+@api_view(['GET','POST'])
+def available_products(request, format=None):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]  
+    if request.method == "GET":
+        products = Products.objects.all()
+        serializer = AvialableProductSerializer(products, many=True)
+        return Response(serializer.data)
+
+# #
+# @api_view(['GET','POST'])
+# def inventory_list(request, format=None):
+#     if request.method == "GET":
+#         inventory = Inventory.objects.all()
+#         serializer = InventorySerializer(inventory, many=True)
+#         return Response(serializer.data)
+
+#     elif request.method == "POST":
+#         #data = JSONParser().parse(request)
+#         serializer = InventorySerializer(data = request.data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data, status=status.HTTP_201_CREATED)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 # class InventoryDetail(APIView): 
 #     authentication_classes = [SessionAuthentication, BasicAuthentication]

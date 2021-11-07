@@ -1,6 +1,8 @@
 from django.urls import path
 from knox import views as knox_views
-from .views import RegisterAPI, LoginAPI, InventoryList, InventoryDetail, ProductList, ProductDetail, IngredientQuantityList, IngredientQuantityDetail
+from rest_framework import views
+from .views import  RegisterAPI, LoginAPI, InventoryList, InventoryDetail, ProductList, ProductDetail, IngredientQuantityList, IngredientQuantityDetail
+from . import views
 
 urlpatterns = [
     path('register/', RegisterAPI.as_view(), name='register'),
@@ -13,4 +15,5 @@ urlpatterns = [
     path('products/<int:pk>/', ProductDetail.as_view()),
     path('ingredientQuantity/', IngredientQuantityList.as_view()),
     path('ingredientQuantity/<int:pk>/', IngredientQuantityDetail.as_view()),
+    path('available_products/',views.available_products)
 ]

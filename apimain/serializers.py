@@ -1,3 +1,4 @@
+from django.contrib.auth import models
 from rest_framework import fields, serializers
 from rest_framework.compat import md_filter_add_syntax_highlight
 from . models import Inventory, IngredientQuantity, Products
@@ -38,7 +39,10 @@ class ProductsSerializer(serializers.ModelSerializer):
         model = Products
         fields = ['product', 'cost_price', 'selling_price', 'all_ingridient']
 
- 
+class AvialableProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Products
+        fields = ['product']
 
 
     # def create(self, validated_data):
